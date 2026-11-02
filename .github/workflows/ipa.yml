@@ -1,0 +1,37 @@
+name: Build IPA
+on: [push, workflow_dispatch]
+
+jobs:
+  build:
+    runs-on: macos-14
+    steps:
+      - uses: actions/checkout@v4
+      
+      - name: Generate
+        run: |
+          brew install xcodegen
+          xcodegen generate
+          
+      - name: Build
+        run: |
+          xcodebuild -project AstralGame.xcodeproj \
+            -scheme AstralGame \
+            -sdk iphoneos \
+            -configuration Release \
+            -derivedDataPath $PWD/build \
+            CODE_SIGN_IDENTITY="" \
+            CODE_SIGNING_REQUIRED=NO \
+            CODE_SIGNING_ALLOWED=NO \
+            build
+            
+      - name: Pack
+        run: |
+          mkdir -p build/Payload
+          cp -R build/Build/Products/Release-iphoneos/AstralGame.app build/Payload/
+          cd build && zip -qr AstralGame.ipa Payload
+          
+      - name: Upload
+        uses: actions/upload-artifact@v4
+        with:
+          name: AstralGame-ipa
+          path: build/AstralGame.ipa
