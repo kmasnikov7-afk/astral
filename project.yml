@@ -3,7 +3,6 @@ options:
   bundleIdPrefix: com.astral
   deploymentTarget:
     iOS: "15.0"
-  objectVersion: 56
 
 targets:
   AstralGame:
