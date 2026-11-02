@@ -6,17 +6,14 @@ jobs:
     runs-on: macos-14
     steps:
       - uses: actions/checkout@v4
-      
-      - name: Setup Xcode 15
-        uses: maxim-lobanov/setup-xcode@v1
-        with:
-          xcode-version: '15.4'
 
-      - name: Generate
+      - name: Generate Project & Fix Format
         run: |
           brew install xcodegen
           xcodegen generate
-          
+          # Принудительно меняем формат 77 (Xcode 16) на 56 (Xcode 15)
+          sed -i '' 's/objectVersion = 77;/objectVersion = 56;/g' AstralGame.xcodeproj/project.pbxproj
+
       - name: Build
         run: |
           xcodebuild -project AstralGame.xcodeproj \
@@ -28,13 +25,13 @@ jobs:
             CODE_SIGNING_REQUIRED=NO \
             CODE_SIGNING_ALLOWED=NO \
             build
-            
+
       - name: Pack
         run: |
           mkdir -p build/Payload
           cp -R build/Build/Products/Release-iphoneos/AstralGame.app build/Payload/
           cd build && zip -qr AstralGame.ipa Payload
-          
+
       - name: Upload
         uses: actions/upload-artifact@v4
         with:
