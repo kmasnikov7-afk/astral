@@ -1,0 +1,15 @@
+name: AstralGame
+options:
+  bundleIdPrefix: com.astral
+  deploymentTarget:
+    iOS: "15.0"
+
+targets:
+  AstralGame:
+    type: application
+    platform: iOS
+    sources: [Sources]
+    settings:
+      base:
+        GENERATE_INFOPLIST_FILE: YES
+        PRODUCT_BUNDLE_IDENTIFIER: com.astral.game
